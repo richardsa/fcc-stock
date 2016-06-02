@@ -60,15 +60,19 @@
             console.log("symbol " + symbol)
             apiUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20(%22YHOO%22%2C%22AAPL%22%2C%22GOOG%22%2C%22MSFT%22%2C%22" + symbol + "%22)%20and%20startDate%20%3D%20%22" + begDate + "%22%20and%20endDate%20%3D%20%22" + today + "%22&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
                  ajaxFunctions.ajaxRequest('POST', appUrl + "/api/"  + symbol, function () {
-                   ajaxFunctions.ajaxRequest('GET', apiUrl, displayStocks);
+                   ajaxFunctions.ajaxRequest('GET', appUrl + "/api/", getSymbols);
                   });
            // ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, displayStocks));
         } else {
             response = "symbol does not exist";
+            console.log(response);
         }
         //symbolResponse.innerHTML = JSON.stringify(response);
     }
 
+    function getSymbols(data){
+      console.log(data);
+    }
     function displayStocks(data) {
         var stocksObject = JSON.parse(data);
        // testing.innerHTML = JSON.stringify(stocksObject);
@@ -79,7 +83,7 @@
 
         for (var i = 0; i < roughResults.length; i++) {
             var date = new Date(roughResults[i].Date);
-            var counter = roughResults.length / 5;
+            var counter = roughResults.length / 4;
 
             if (counterB === counter || i > counter) {
                 symbols.push(roughResults[i].Symbol);

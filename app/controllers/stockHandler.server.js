@@ -5,41 +5,115 @@ var Stocks = require('../models/stocks.js');
 var Counters = require('../models/counters.js');
 var counterID;
 var clickProjection = {
-    '_id': false
+  '_id': false
 };
 
 function stockHandler() {
 
-    this.addStock = function(req, res) {
-      console.log("consoling bro " + req.params.id);
-		res.send(req.params.id);
+  this.addStock = function(req, res) {
+    var stockReq = req.params.id;
+    Counters.collection.findOne({}, clickProjection, function(err, result) {
+      if (err) {
+        throw err;
+      }
 
-    }
+      if (result) {
+        counterID = result.counterVal;
 
-  
-  
-    // quick and dirty function to clear tables
-    this.getDrop = function(req, res) {
-
-
-        Stocks.remove(function(err, p) {
-            if (err) {
-                throw err;
-            } else {
-                res.send("Both tables Cleared");
-            }
+      } else {
+        Counters.collection.insert({
+          'counterVal': 1
+        }, function(err) {
+          if (err) {
+            throw err;
+          }
+          counterID = result.counterVal;
         });
+      }
+    });
 
-        Counters.collection.update({}, {
-            'counterVal': 0
-        }, function(err, result) {
+    Stocks.findOne({
+        stockSymbol: stockReq
+      },
+      function(err, found) {
+        if (err) {
+          throw err;
+        }
+        if (found) {
+          res.json(found);
+
+        } else {
+          Stocks.collection.insert({
+            stockSymbol: stockReq,
+            stockId: counterID
+          }, function(err) {
             if (err) {
-                throw err;
+              throw err;
             }
-            
-        });
+            Counters.collection.findAndModify({}, {
+              '_id': 1
+            }, {
+              $inc: {
+                'counterVal': 1
+              }
+            }, function(err, updatedResult) {
+              if (err) {
+                throw err;
+              }
+              res.send(updatedResult);
 
+            });
+          });
+        }
+      
+      });
+
+
+    console.log("consoling bro " + req.params.id);
+//    res.send(req.params.id);
+
+  };
+
+  this.getStock = function(req, res) {
+    console.log("yeah buddy");
+    var clickProjection = {
+      '_id': false
     };
+    Stocks.collection.find({
+
+    }, clickProjection).sort({
+      'stockId': -1
+    }).limit(5).toArray(function(err, docs) {
+      if (err) throw err;
+
+      res.send(docs);
+    });
+  };
+
+
+
+  // quick and dirty function to clear tables
+  this.getDrop = function(req, res) {
+
+
+    Stocks.remove(function(err, p) {
+      if (err) {
+        throw err;
+      } else {
+        res.send("Both tables Cleared");
+      }
+    });
+
+    Counters.collection.update({}, {
+      'counterVal': 0
+    }, function(err, result) {
+      if (err) {
+        throw err;
+      }
+
+    });
+
+  };
 
 }
 

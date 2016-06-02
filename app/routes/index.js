@@ -38,7 +38,10 @@ module.exports = function (app, passport) {
 		});
 
 	app.route('/api/:id')
-		.post(stockHandler.addStock)
+		.post(stockHandler.addStock);
+		
+	app.route('/api/')
+		.get(stockHandler.getStock);
 
 	app.route('/auth/github')
 		.get(passport.authenticate('github'));
@@ -48,7 +51,8 @@ module.exports = function (app, passport) {
 			successRedirect: '/',
 			failureRedirect: '/login'
 		}));
-
+	app.route('/testing')
+        .get(stockHandler.getDrop);
 	app.route('/api/:id/clicks')
 		.get(isLoggedIn, clickHandler.getClicks)
 		.post(isLoggedIn, clickHandler.addClick)
