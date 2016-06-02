@@ -11,10 +11,12 @@
 
     var stockInfo = document.querySelector('#stockMarketChart');
     var testing = document.querySelector('#testing');
+    var errorMessage = document.querySelector('#error');
     var symbolResponse = document.querySelector('#searchResults');
     // var symbol = [];
     var counterB = 0;
-    
+    var arrLength; 
+
 
     // date 6 months past from: http://stackoverflow.com/a/1648448
     function addMonths(date, months) {
@@ -55,27 +57,44 @@
         // testing.innerHTML = JSON.stringify(response);
         //if (response.hasOwnProperty('CompanyName')) {
         if (response.Name && response.symbol) {
-       
+
             var symbol = response.symbol;
             console.log("symbol " + symbol)
             apiUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20(%22YHOO%22%2C%22AAPL%22%2C%22GOOG%22%2C%22MSFT%22%2C%22" + symbol + "%22)%20and%20startDate%20%3D%20%22" + begDate + "%22%20and%20endDate%20%3D%20%22" + today + "%22&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
-                 ajaxFunctions.ajaxRequest('POST', appUrl + "/api/"  + symbol, function () {
-                   ajaxFunctions.ajaxRequest('GET', appUrl + "/api/", getSymbols);
-                  });
-           // ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, displayStocks));
+            ajaxFunctions.ajaxRequest('POST', appUrl + "/api/" + symbol, function() {
+                ajaxFunctions.ajaxRequest('GET', appUrl + "/api/", getSymbols);
+            });
+            // ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, displayStocks));
         } else {
             response = "symbol does not exist";
-            console.log(response);
+            testing.innerHTML = "<div class='alert alert-danger'>Your symbols does not appear valid. Please try again</div>";
         }
         //symbolResponse.innerHTML = JSON.stringify(response);
     }
 
-    function getSymbols(data){
-      console.log(data);
+    function getSymbols(data) {
+        console.log(data);
+        var symbolsObject = JSON.parse(data);
+        var symbolsStr = "";
+        arrLength = symbolsObject.length;
+        console.log("length " + arrLength);
+        for (var i = 0; i < arrLength; i++){
+          if (i === arrLength - 1){
+            symbolsStr += "%22" + symbolsObject[i].stockSymbol + "%22";
+          } else {
+            symbolsStr += "%22" + symbolsObject[i].stockSymbol + "%22%2C";
+          }
+          
+        }
+        console.log(symbolsStr);
+        testing.innerHTML = JSON.stringify(symbolsObject);
+        apiUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20(" + symbolsStr + ")%20and%20startDate%20%3D%20%22" + begDate + "%22%20and%20endDate%20%3D%20%22" + today + "%22&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
+        ajaxFunctions.ajaxRequest('GET', apiUrl, displayStocks);
     }
+
     function displayStocks(data) {
         var stocksObject = JSON.parse(data);
-       // testing.innerHTML = JSON.stringify(stocksObject);
+        // testing.innerHTML = JSON.stringify(stocksObject);
         var roughResults = stocksObject.query.results.quote;
         var results = [];
         var symbols = [];
@@ -83,7 +102,7 @@
 
         for (var i = 0; i < roughResults.length; i++) {
             var date = new Date(roughResults[i].Date);
-            var counter = roughResults.length / 4;
+            var counter = roughResults.length / arrLength;
 
             if (counterB === counter || i > counter) {
                 symbols.push(roughResults[i].Symbol);
@@ -93,7 +112,7 @@
                     var price = parseFloat($.trim(roughResults[i].Close));
                     price = Math.round(price * 100) / 100;
                     results[j].push(price);
-                   // console.log(results[j]);
+                    // console.log(results[j]);
                     //console.log(roughResults[i].Symbol + " " + roughResults[i].Date + "     " + j);
                     i++;
                 }
@@ -112,9 +131,9 @@
         }
 
         // Load the Visualization API and the corechart package.
-      /*  google.charts.load('current', {
-            'packages': ['corechart']
-        });*/
+        /*  google.charts.load('current', {
+              'packages': ['corechart']
+          });*/
 
         // Set a callback to run when the Google Visualization API is loaded.
         google.charts.setOnLoadCallback(drawChart);
@@ -156,7 +175,7 @@
         });
     });
     // display stocks call on load
-    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, displayStocks));
+    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', appUrl + "/api/", getSymbols));
 
     $("#searchSubmit").click(function() {
         var symbol = $("#searchInput").val();

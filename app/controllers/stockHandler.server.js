@@ -32,45 +32,58 @@ function stockHandler() {
       }
     });
 
-    Stocks.findOne({
+    Stocks
+      .findOneAndUpdate({
         stockSymbol: stockReq
-      },
-      function(err, found) {
+      }, {
+        stockId: counterID
+      }, {
+        'new': true
+      })
+      .exec(function(err, doc) {
         if (err) {
           throw err;
-        }
-        if (found) {
-          res.json(found);
-
-        } else {
-          Stocks.collection.insert({
-            stockSymbol: stockReq,
-            stockId: counterID
-          }, function(err) {
+        } 
+        if (doc){
+          Counters.collection.findAndModify({}, {
+            '_id': 1
+          }, {
+            $inc: {
+              'counterVal': 1
+            }
+          }, function(err, updatedResult) {
             if (err) {
               throw err;
             }
-            Counters.collection.findAndModify({}, {
-              '_id': 1
-            }, {
-              $inc: {
-                'counterVal': 1
-              }
-            }, function(err, updatedResult) {
-              if (err) {
-                throw err;
-              }
-              res.send(updatedResult);
+            res.send(updatedResult);
 
-            });
           });
-        }
-      
+      //  res.json(doc);
+      } else {
+        Stocks.collection.insert({
+          stockSymbol: stockReq,
+          stockId: counterID
+        }, function(err) {
+          if (err) {
+            throw err;
+          }
+          Counters.collection.findAndModify({}, {
+            '_id': 1
+          }, {
+            $inc: {
+              'counterVal': 1
+            }
+          }, function(err, updatedResult) {
+            if (err) {
+              throw err;
+            }
+            res.send(updatedResult);
+
+          });
+        });
+      }
       });
 
-
-    console.log("consoling bro " + req.params.id);
-//    res.send(req.params.id);
 
   };
 
