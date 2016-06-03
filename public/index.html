@@ -54,36 +54,38 @@
   </div>
   <div class="container">
     <div class="row">
-      
-      <div id="stockMarketChart"></div>
-      <div id="testing"></div>
-    </div>
-    <div class="row">
-			<h3>Enter a stock symbol to retrieve stock prices!</h3>
-			<form>
-				<div class="col-xs-9">
-					<div class="form-group">
+      <h3>Enter a stock symbol to retrieve stock prices!</h3>
+      <form>
+        <div class="col-xs-9">
+          <div class="form-group">
 
 
-						<label for="searchInput" class="sr-only">search terms</label>
-						<input type="text" name="searchInput" class="form-control" id="searchInput" placeholder="Where are you?">
-					</div>
-				</div>
-				<div class="col-xs-3">
-					<div class="form-group">
+            <label for="searchInput" class="sr-only">search terms</label>
+            <input type="text" name="searchInput" class="form-control" id="searchInput" placeholder="Where are you?">
+          </div>
+        </div>
+        <div class="col-xs-3">
+          <div class="form-group">
 
-						<button type="submit" id="searchSubmit1" class="btn btn-primary">Search</button>
-					</div>
-				</div>
+            <button type="submit" id="searchSubmit1" class="btn btn-primary">Search</button>
+          </div>
+        </div>
 
-			</form>
+      </form>
       <button type="submit" id="searchSubmit" class="btn btn-primary">Search</button>
       <div id="error"></div>
-			<div id="searchResults"></div>
-  </div>
+      <div id="searchResults"></div>
+    </div>
+    <div class="row">
 
-  <script type="text/javascript" src="common/ajax-functions.js"></script>
-  <script type="text/javascript" src="controllers/stockController.client.js"></script>
+      <div id="stockMarketChart"></div>
+      <div id="stockSymbols"></div>
+      <div id="testing"></div>
+    </div>
+    
+
+    <script type="text/javascript" src="common/ajax-functions.js"></script>
+    <script type="text/javascript" src="controllers/stockController.client.js"></script>
 
 </body>
 

@@ -1,3 +1,7 @@
+/* custom css */
+.col-sm-3.stockSymbol {border: solid 1px; min-height:200px;}
+.stockSymbol:hover{background-color: #153649; color: #ffffff;}
+
 /********* Fonts **********/
 
 @font-face {

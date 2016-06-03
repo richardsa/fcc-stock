@@ -12,7 +12,8 @@ module.exports = function (app, passport) {
 		});
 
 	app.route('/api/:id')
-		.post(stockHandler.addStock);
+		.post(stockHandler.addStock)
+		.delete(stockHandler.addStock)
 		
 	app.route('/api/')
 		.get(stockHandler.getStock);

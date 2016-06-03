@@ -96,13 +96,33 @@ function stockHandler() {
 
     }, clickProjection).sort({
       'stockId': -1
-    }).limit(5).toArray(function(err, docs) {
+    }).limit(4).toArray(function(err, docs) {
       if (err) throw err;
 
       res.send(docs);
     });
   };
 
+// delete stock symbol 
+this.deleteStock = function(req, res) {
+
+		var stockReq = req.params.id;
+		var githubId = req.user.github.id;
+
+		Stocks.findOne({
+						stockSymbol: stockReq
+				},
+				function(err, poll) {
+						if (!err) {
+
+								poll.remove(function(err) {
+										res.send("stock deleted");
+								});
+						}
+				});
+
+
+}
 
 
   // quick and dirty function to clear tables
