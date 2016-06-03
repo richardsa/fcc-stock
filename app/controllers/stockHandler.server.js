@@ -60,27 +60,29 @@ function stockHandler() {
           });
       //  res.json(doc);
       } else {
-        Stocks.collection.insert({
-          stockSymbol: stockReq,
-          stockId: counterID
-        }, function(err) {
+        Counters.collection.findAndModify({}, {
+          '_id': 1
+        }, {
+          $inc: {
+            'counterVal': 1
+          }
+        }, function(err, updatedResult) {
           if (err) {
             throw err;
           }
-          Counters.collection.findAndModify({}, {
-            '_id': 1
-          }, {
-            $inc: {
-              'counterVal': 1
-            }
-          }, function(err, updatedResult) {
+          Stocks.collection.insert({
+            stockSymbol: stockReq,
+            stockId: counterID
+          }, function(err) {
             if (err) {
               throw err;
             }
-            res.send(updatedResult);
-
+          
           });
+          res.send(updatedResult);
+
         });
+      
       }
       });
 
@@ -88,27 +90,27 @@ function stockHandler() {
   };
 
   this.getStock = function(req, res) {
-    console.log("yeah buddy");
+    
     var clickProjection = {
       '_id': false
     };
-    Stocks.collection.find({
+    Stocks.find({}).sort({
+      'stockId': 1
+    }).limit(4).exec(function(err, doc) {
+        if (err) {
+          throw err;
+        } 
+      
 
-    }, clickProjection).sort({
-      'stockId': -1
-    }).limit(4).toArray(function(err, docs) {
-      if (err) throw err;
-
-      res.send(docs);
+      res.send(doc);
     });
+    
   };
 
 // delete stock symbol 
 this.deleteStock = function(req, res) {
 
 		var stockReq = req.params.id;
-		var githubId = req.user.github.id;
-
 		Stocks.findOne({
 						stockSymbol: stockReq
 				},

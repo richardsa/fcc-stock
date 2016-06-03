@@ -78,7 +78,7 @@
       }
 			symbolOutput += "<div class='col-sm-3 stockSymbol text-center'>";
 			symbolOutput += "<h1>" + symbolsObject[i].stockSymbol + "</h1>";
-			symbolOutput += "<a class='btn btn-danger' role='button' href='" + appUrl + "/api/" + symbolsObject[i].stockSymbol + "'>Delete</a>";
+			symbolOutput += "<button type='button' class='btn btn-danger btnDeleteStock' id='" + symbolsObject[i].stockSymbol + "'>Delete</a>";
 			symbolOutput += "</div>";
 
     }
@@ -157,6 +157,15 @@
     google.charts.load('current', {
       'packages': ['corechart']
     });
+  });
+  
+  // function for deleting stock symbol 
+  $("#stockSymbols").on("click", ".btnDeleteStock", function() {
+    var stockID = $(this).attr('id');
+    var deleteUrl = appUrl + "/api/" + stockID;
+    ajaxFunctions.ajaxRequest('DELETE', deleteUrl, function() {
+              ajaxFunctions.ajaxRequest('GET', appUrl + "/api/", getSymbols);
+        });
   });
   // display stocks call on load
   ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', appUrl + "/api/", getSymbols));

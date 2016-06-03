@@ -13,7 +13,7 @@ module.exports = function (app, passport) {
 
 	app.route('/api/:id')
 		.post(stockHandler.addStock)
-		.delete(stockHandler.addStock)
+		.delete(stockHandler.deleteStock);
 		
 	app.route('/api/')
 		.get(stockHandler.getStock);
