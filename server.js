@@ -1,12 +1,20 @@
-'use strict';
-
 var express = require('express');
+var app = express();
+
+//var server = require('http').Server(app);
+var http = require('http').Server(app);
 var routes = require('./app/routes/index.js');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 
-var app = express();
+//var app = express();
+
+//var io = require('socket.io')(server);
+var io = require('socket.io')(http);
+
+
+
 require('dotenv').load();
 require('./app/config/passport')(passport);
 
@@ -27,7 +35,18 @@ app.use(passport.session());
 
 routes(app, passport);
 
+
+
+//server.listen(port);
+
 var port = process.env.PORT || 8080;
-app.listen(port,  function () {
-	console.log('Node.js listening on port ' + port + '...');
+// based on following tutorial http://socket.io/get-started/chat/
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+});
+
+http.listen(port, function(){
+  console.log('listening on *:3000');
 });

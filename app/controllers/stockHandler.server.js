@@ -95,7 +95,7 @@ function stockHandler() {
       '_id': false
     };
     Stocks.find({}).sort({
-      'stockId': 1
+      '_id': -1
     }).limit(4).exec(function(err, doc) {
         if (err) {
           throw err;
