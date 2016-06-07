@@ -111,13 +111,14 @@ function stockHandler() {
 this.deleteStock = function(req, res) {
 
 		var stockReq = req.params.id;
+		console.log("stock req " + stockReq);
 		Stocks.findOne({
 						stockSymbol: stockReq
 				},
-				function(err, poll) {
+				function(err, stock) {
 						if (!err) {
 
-								poll.remove(function(err) {
+								stock.remove(function(err) {
 										res.send("stock deleted");
 								});
 						}

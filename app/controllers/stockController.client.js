@@ -3,7 +3,7 @@
 (function() {
     var testing = document.querySelector('#testing');
     var socket = io();
-    var socket2 = io();
+  //  var socket2 = io();
     var stockInfo = document.querySelector('#stockMarketChart');
     var errorMessage = document.querySelector('#error');
     var symbolResponse = document.querySelector('#searchResults');
@@ -158,15 +158,19 @@
     });
 
     // function for deleting stock symbol 
-    $("#stockSymbols").on("click", ".btnDeleteStock", function() {
+    $("#stockSymbols").on("click", ".btnDeleteStock", function(e) {
+         e.preventDefault();
+         e.stopImmediatePropagation();
         var stockID = $(this).attr('id');
-       
-        socket2.emit('stock symbol delete', stockID);
-        return false;
+       //alert($(this).attr('id'));
+        socket.emit('delete stock', $(this).attr('id'));
+        //alert($(this).attr('id'));
+        //return false;
         
     });
-    socket2.on('stock symbol delete', function(msg) {
-          var deleteUrl = appUrl + "/api/" + msg;
+    socket.on('delete stock', function(delSym) {
+       // alert(delSym);
+          var deleteUrl = appUrl + "/api/" + delSym;
           ajaxFunctions.ajaxRequest('DELETE', deleteUrl, function() {
               ajaxFunctions.ajaxRequest('GET', appUrl + "/api/", getSymbols);
           });
@@ -177,11 +181,16 @@
     ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', appUrl + "/api/", getSymbols));
 
     // display stocks after search using socets
-    $('form').submit(function() {
-        var symbol = $("#searchInput").val();
-        socket.emit('chat message', symbol);
+    $('form').submit(function(e) {
+        // used following solution to prevent duplicate firing of form http://stackoverflow.com/a/26261975
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        socket.emit('chat message', $("#searchInput").val());
+        $("#searchInput").val('');
         return false;
     });
+
+    
     socket.on('chat message', function(msg) {
         var symbolUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20%28%22" + msg + "%22%29&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&format=json";
         ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', symbolUrl, checkSymbol));

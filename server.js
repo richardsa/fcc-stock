@@ -25,9 +25,9 @@ app.use('/public', express.static(process.cwd() + '/public'));
 app.use('/common', express.static(process.cwd() + '/app/common'));
 
 app.use(session({
-	secret: 'secretClementine',
-	resave: false,
-	saveUninitialized: true
+  secret: 'secretClementine',
+  resave: false,
+  saveUninitialized: true
 }));
 
 app.use(passport.initialize());
@@ -41,12 +41,26 @@ routes(app, passport);
 
 var port = process.env.PORT || 8080;
 // based on following tutorial http://socket.io/get-started/chat/
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
+io.on('connection', function(socket) {
+
+  socket.on('delete stock', function(delSym) {
+    io.emit('delete stock', delSym);
+  });
+
+
+  socket.on('chat message', function(msg) {
     io.emit('chat message', msg);
   });
 });
 
-http.listen(port, function(){
+io.on('connection', function(socket) {
+
+
+  socket.on('chat message', function(msg) {
+    io.emit('chat message', msg);
+  });
+});
+
+http.listen(port, function() {
   console.log('listening on *:3000');
 });
