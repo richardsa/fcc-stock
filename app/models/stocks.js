@@ -5,8 +5,8 @@ var Schema = mongoose.Schema;
 
 var Stock = new Schema({
 
-      stockSymbol: String,
-      stockId: String
+      stockSymbol: String
+     // stockId: String
       
       
    

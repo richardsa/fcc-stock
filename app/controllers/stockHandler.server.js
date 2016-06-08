@@ -2,130 +2,92 @@
 var path = process.cwd();
 
 var Stocks = require('../models/stocks.js');
-var Counters = require('../models/counters.js');
+/*var Counters = require('../models/counters.js');
 var counterID;
 var clickProjection = {
   '_id': false
-};
+};*/
 
 function stockHandler() {
 
   this.addStock = function(req, res) {
     var stockReq = req.params.id;
-    Counters.collection.findOne({}, clickProjection, function(err, result) {
-      if (err) {
-        throw err;
-      }
-
-      if (result) {
-        counterID = result.counterVal;
-
-      } else {
-        Counters.collection.insert({
-          'counterVal': 1
-        }, function(err) {
-          if (err) {
-            throw err;
-          }
-          counterID = result.counterVal;
-        });
-      }
-    });
-
+    console.log(stockReq);
     Stocks
-      .findOneAndUpdate({
+      .findOne({
         stockSymbol: stockReq
-      }, {
-        stockId: counterID
-      }, {
-        'new': true
       })
       .exec(function(err, doc) {
         if (err) {
           throw err;
-        } 
-        if (doc){
-          Counters.collection.findAndModify({}, {
-            '_id': 1
-          }, {
-            $inc: {
-              'counterVal': 1
-            }
+        }
+        if (doc) {
+          console.log("if " + JSON.stringify(doc));
+          res.end();
+        } else {
+          Stocks.collection.insert({
+            stockSymbol: stockReq
+
           }, function(err, updatedResult) {
             if (err) {
               throw err;
             }
-            res.send(updatedResult);
+            console.log("else " + JSON.stringify(updatedResult));
+            res.end();
 
           });
-      //  res.json(doc);
-      } else {
-        Counters.collection.findAndModify({}, {
-          '_id': 1
-        }, {
-          $inc: {
-            'counterVal': 1
-          }
-        }, function(err, updatedResult) {
-          if (err) {
-            throw err;
-          }
-          Stocks.collection.insert({
-            stockSymbol: stockReq,
-            stockId: counterID
-          }, function(err) {
-            if (err) {
-              throw err;
-            }
-          
-          });
-          res.send(updatedResult);
 
-        });
-      
-      }
+
+        }
       });
 
 
   };
 
   this.getStock = function(req, res) {
-    
+
     var clickProjection = {
       '_id': false
     };
     Stocks.find({}).sort({
       '_id': -1
     }).limit(4).exec(function(err, doc) {
-        if (err) {
-          throw err;
-        } 
-      
+      if (err) {
+        throw err;
+      }
+
 
       res.send(doc);
     });
-    
+
   };
 
-// delete stock symbol 
-this.deleteStock = function(req, res) {
+  // delete stock symbol 
+  this.deleteStock = function(req, res) {
 
-		var stockReq = req.params.id;
-		console.log("stock req " + stockReq);
-		Stocks.findOne({
-						stockSymbol: stockReq
-				},
-				function(err, stock) {
-						if (!err) {
+    var stockReq = req.params.id;
+    console.log("stock req " + stockReq);
+    Stocks.findOne({
+        stockSymbol: stockReq
+      },
+      function(err, stock) {
+        if (err) {
+          throw err;
+        }
 
-								stock.remove(function(err) {
-										res.send("stock deleted");
-								});
-						}
-				});
+        if (stock) {
+          stock.remove(function(err) {
+            if (err) {
+              throw err;
+            }
+            res.send("stock deleted");
+          });
+        }
+
+      });
 
 
-}
+  }
 
 
   // quick and dirty function to clear tables
@@ -140,14 +102,14 @@ this.deleteStock = function(req, res) {
       }
     });
 
-    Counters.collection.update({}, {
+   /* Counters.collection.update({}, {
       'counterVal': 0
     }, function(err, result) {
       if (err) {
         throw err;
       }
 
-    });
+    });*/
 
   };
 
