@@ -46,20 +46,20 @@ io.on('connection', function(socket) {
   socket.on('delete stock', function(delSym) {
     io.emit('delete stock', delSym);
   });
+   socket.on('search stock', function(stockSym) {
+    io.emit('search stock', stockSym);
+  });
+  
 
 
- /* socket.on('chat message', function(msg) {
-    io.emit('chat message', msg);
-  });*/
 });
 
-io.on('connection', function(socket) {
-
+/*io.on('connection', function(socket) {
 
   socket.on('search stock', function(stockSym) {
     io.emit('search stock', stockSym);
   });
-});
+});*/
 
 http.listen(port, function() {
   console.log('listening on *:3000');

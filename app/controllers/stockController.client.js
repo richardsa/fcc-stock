@@ -156,11 +156,12 @@
 
     // allow users to search stock symbols 
     // 
-    $("#stockForm").bind('submit', function(e) {
+    $("form").bind('submit', function(e) {
       //e.stopPropagation();
       e.stopImmediatePropagation();
       e.preventDefault();
       socket.emit('search stock', $("#searchInput").val());
+      console.log('yeah');
       $("#searchInput").val('');
       errorMessage.innerHTML = "";
       return false;
@@ -177,7 +178,10 @@
       e.stopImmediatePropagation();
       errorMessage.innerHTML = "";
       var stockID = $(this).attr('id');
-      socket.emit('delete stock', $(this).attr('id'));
+     
+         socket.emit('delete stock', $(this).attr('id'));
+     
+     // socket.emit('delete stock', $(this).attr('id'));
       //return false;
 
     });

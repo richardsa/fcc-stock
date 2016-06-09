@@ -41,20 +41,33 @@ function stockHandler() {
   this.getStock = function(req, res) {
   Stocks.count({}, function( err, count){
     console.log( "Number of users:", count );
+    if (count > 4){
+      var x = count - 4;
+      // remove stock symbols when more than 4 are used
+      Stocks.find({}).select('_id').sort({_id: 1}).limit(x)
+      .exec(function (err, docs) {
+          var ids = docs.map(function(doc) { return doc._id; });
+          Stocks.remove({_id: {$in: ids}}, function (err) {if (err) {
+            throw err;
+          }}); 
+      });
+    }
+        var clickProjection = {
+          '_id': false
+        };
+        Stocks.find({}).sort({
+          '_id': -1
+        }).limit(4).exec(function(err, doc) {
+          if (err) {
+            throw err;
+          }
+          res.send(doc);
+        });
 });
-    var clickProjection = {
-      '_id': false
-    };
-    Stocks.find({}).sort({
-      '_id': -1
-    }).limit(4).exec(function(err, doc) {
-      if (err) {
-        throw err;
-      }
 
 
-      res.send(doc);
-    });
+  
+
 
   };
 
