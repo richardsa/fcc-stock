@@ -48,16 +48,16 @@ io.on('connection', function(socket) {
   });
 
 
-  socket.on('chat message', function(msg) {
+ /* socket.on('chat message', function(msg) {
     io.emit('chat message', msg);
-  });
+  });*/
 });
 
 io.on('connection', function(socket) {
 
 
-  socket.on('chat message', function(msg) {
-    io.emit('chat message', msg);
+  socket.on('search stock', function(stockSym) {
+    io.emit('search stock', stockSym);
   });
 });
 
