@@ -156,8 +156,8 @@
 
     // allow users to search stock symbols 
     // 
-    $("#stockForm").on('submit', function(e) {
-      e.stopPropagation();
+    $("#stockForm").bind('submit', function(e) {
+      //e.stopPropagation();
       e.stopImmediatePropagation();
       e.preventDefault();
       socket.emit('search stock', $("#searchInput").val());

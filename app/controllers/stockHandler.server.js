@@ -1,12 +1,6 @@
 'use strict';
 var path = process.cwd();
-
 var Stocks = require('../models/stocks.js');
-/*var Counters = require('../models/counters.js');
-var counterID;
-var clickProjection = {
-  '_id': false
-};*/
 
 function stockHandler() {
 
@@ -45,7 +39,9 @@ function stockHandler() {
   };
 
   this.getStock = function(req, res) {
-
+  Stocks.count({}, function( err, count){
+    console.log( "Number of users:", count );
+});
     var clickProjection = {
       '_id': false
     };
@@ -93,24 +89,13 @@ function stockHandler() {
   // quick and dirty function to clear tables
   this.getDrop = function(req, res) {
 
-
     Stocks.remove(function(err, p) {
       if (err) {
         throw err;
       } else {
-        res.send("Both tables Cleared");
+        res.send("Stock Table Cleared");
       }
     });
-
-   /* Counters.collection.update({}, {
-      'counterVal': 0
-    }, function(err, result) {
-      if (err) {
-        throw err;
-      }
-
-    });*/
-
   };
 
 }
