@@ -45,18 +45,13 @@
     <!--end nav menu -->
     <div class="jumbotron text-center home main-section">
         <div class="container">
-
-
             <h1>Richie's FCC Stock Market App</h1>
-
-
         </div>
-
     </div>
     <div class="container">
         <div class="row">
             <h3>Enter a stock symbol to retrieve stock prices!</h3>
-            
+
             <form name="stockForm" id="stockForm" action="">
                 <div class="col-xs-9">
                     <div class="form-group">
@@ -74,28 +69,17 @@
                 </div>
 
             </form>
-            <p>Compare up to 4 stock symbols at once!</p>
-            <!-- <button type="submit" id="searchSubmit" class="btn btn-primary">Search</button>
+            <p>View up to four stocks at the same time!</p>
 
-            <div id="searchResults"></div>-->
         </div>
         <div id="error"></div>
         <div class="row">
+            <h3>Stock Symbols</h3>
             <div id="stockSymbols"></div>
             <div id="stockMarketChart"></div>
-
-            <div id="testing"></div>
-            <ul id="messages"></ul>
-            <!--  <form  action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>-->
         </div>
-
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
         <script type="text/javascript" src="common/ajax-functions.js"></script>
         <script type="text/javascript" src="controllers/stockController.client.js"></script>
-
-
 </body>
-
 </html>

@@ -12,7 +12,7 @@ var session = require('express-session');
 
 //var io = require('socket.io')(server);
 var io = require('socket.io')(http);
-
+var nsp = io.of('/my-namespace');
 
 
 require('dotenv').load();
@@ -44,23 +44,18 @@ var port = process.env.PORT || 8080;
 io.on('connection', function(socket) {
 
   socket.on('delete stock', function(delSym) {
-    io.emit('delete stock', delSym);
+    socket.broadcast.emit('delete stock', delSym);
+    
   });
    socket.on('search stock', function(stockSym) {
-    io.emit('search stock', stockSym);
+     socket.broadcast.emit('search stock', stockSym);
   });
   
 
 
 });
 
-/*io.on('connection', function(socket) {
-
-  socket.on('search stock', function(stockSym) {
-    io.emit('search stock', stockSym);
-  });
-});*/
 
 http.listen(port, function() {
-  console.log('listening on *:3000');
+  console.log('listening on : ' + port);
 });
