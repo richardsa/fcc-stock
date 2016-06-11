@@ -25,9 +25,9 @@ app.use('/public', express.static(process.cwd() + '/public'));
 app.use('/common', express.static(process.cwd() + '/app/common'));
 
 app.use(session({
-  secret: 'secretClementine',
-  resave: false,
-  saveUninitialized: true
+    secret: 'secretClementine',
+    resave: false,
+    saveUninitialized: true
 }));
 
 app.use(passport.initialize());
@@ -43,19 +43,15 @@ var port = process.env.PORT || 8080;
 // based on following tutorial http://socket.io/get-started/chat/
 io.on('connection', function(socket) {
 
-  socket.on('delete stock', function(delSym) {
-    socket.broadcast.emit('delete stock', delSym);
+    socket.on('socket reload', function(stockSym) {
+        socket.broadcast.emit('socket reload', stockSym);
+    });
     
-  });
-   socket.on('search stock', function(stockSym) {
-     socket.broadcast.emit('search stock', stockSym);
-  });
-  
-
-
 });
 
 
+
+
 http.listen(port, function() {
-  console.log('listening on : ' + port);
+    console.log('listening on : ' + port);
 });
