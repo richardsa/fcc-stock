@@ -1,19 +1,15 @@
 var express = require('express');
 var app = express();
 
-//var server = require('http').Server(app);
+
 var http = require('http').Server(app);
 var routes = require('./app/routes/index.js');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 
-//var app = express();
 
-//var io = require('socket.io')(server);
 var io = require('socket.io')(http);
-var nsp = io.of('/my-namespace');
-
 
 require('dotenv').load();
 require('./app/config/passport')(passport);
@@ -37,9 +33,8 @@ routes(app, passport);
 
 
 
-//server.listen(port);
-
 var port = process.env.PORT || 8080;
+
 // based on following tutorial http://socket.io/get-started/chat/
 io.on('connection', function(socket) {
 
@@ -48,9 +43,6 @@ io.on('connection', function(socket) {
     });
     
 });
-
-
-
 
 http.listen(port, function() {
     console.log('listening on : ' + port);
